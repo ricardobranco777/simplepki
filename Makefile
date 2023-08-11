@@ -1,10 +1,18 @@
 BIN	= simplepki
 
+.PHONY: all
 all:	$(BIN)
 
 $(BIN): *.go
 	@CGO_ENABLED=0 go build
 
+.PHONY: gen
+gen:
+	@rm -f go.mod go.sum
+	@go mod init $(BIN)
+	@go mod tidy
+
+.PHONY: test
 test: $(BIN)
 	@go vet
 	./$(BIN) -rsa
@@ -29,6 +37,7 @@ test: $(BIN)
 	@openssl x509 -text -noout -in client.pem | grep "^    Signature.Algorithm:"
 	@rm -f *.key *.pem
 
+.PHONY: clean
 clean:
 	@go clean
 	@rm -f *.pem *.key
@@ -40,8 +49,10 @@ else
 BINDIR  = $(HOME)/bin
 endif
 
+.PHONY: install
 install: $(BIN)
 	@install -s -m 0755 $(BIN) $(BINDIR)
 
+.PHONY: uninstall
 uninstall:
 	@rm -f $(BINDIR)/$(BIN)

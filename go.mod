@@ -1,3 +1,3 @@
-module github.com/ricardobranco777/simplepki
+module simplepki
 
-go 1.18
+go 1.20
