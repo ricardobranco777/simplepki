@@ -1,20 +1,30 @@
 BIN	= simplepki
 
+GO	:= go
+
+# https://github.com/golang/go/issues/64875
+arch := $(shell uname -m)
+ifeq ($(arch),s390x)
+CGO_ENABLED = 0
+else
+CGO_ENABLED := 1
+endif
+
+$(BIN): *.go
+	CGO_ENABLED=$(CGO_ENABLED) $(GO) build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie
+
 .PHONY: all
 all:	$(BIN)
 
-$(BIN): *.go
-	CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie
-
 .PHONY: gen
 gen:
-	@rm -f go.mod go.sum
-	@go mod init $(BIN)
-	@go mod tidy
+	rm -f go.mod go.sum
+	$(GO) mod init $(BIN)
+	$(GO) mod tidy
 
 .PHONY: test
 test: $(BIN)
-	@go vet
+	$(GO) vet
 	./$(BIN) -rsa
 	@cat subca.pem ca.pem > cacerts.pem
 	@openssl verify -x509_strict -purpose sslclient -CAfile cacerts.pem client.pem
@@ -39,8 +49,8 @@ test: $(BIN)
 
 .PHONY: clean
 clean:
-	@go clean
-	@rm -f *.pem *.key
+	$(GO) clean
+	rm -f *.pem *.key
 
 euid    = $(shell id -u)
 ifeq ($(euid),0)
@@ -51,8 +61,8 @@ endif
 
 .PHONY: install
 install: $(BIN)
-	@install -s -m 0755 $(BIN) $(BINDIR)
+	install -s -m 0755 $(BIN) $(BINDIR)
 
 .PHONY: uninstall
 uninstall:
-	@rm -f $(BINDIR)/$(BIN)
+	rm -f $(BINDIR)/$(BIN)
