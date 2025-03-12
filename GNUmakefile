@@ -5,9 +5,9 @@ GO	:= go
 # https://github.com/golang/go/issues/64875
 arch := $(shell uname -m)
 ifeq ($(arch),s390x)
-CGO_ENABLED = 0
+CGO_ENABLED ?= 1
 else
-CGO_ENABLED := 1
+CGO_ENABLED := 0
 endif
 
 $(BIN): *.go
