@@ -145,7 +145,7 @@ func newCA(name string, CA *Pair, passphrase string) *Pair {
 		SubjectKeyId:          skid[:],
 		NotAfter:              time.Now().AddDate(1, 1, 1), // One year, one month, one day
 		NotBefore:             time.Now(),
-		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign,
+		KeyUsage:              x509.KeyUsageCertSign | x509.KeyUsageCRLSign | x509.KeyUsageDigitalSignature,
 		BasicConstraintsValid: true,
 		IsCA:                  true,
 		MaxPathLen:            maxPathLen,
