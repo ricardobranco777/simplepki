@@ -83,8 +83,8 @@ func newPair(name string, CA *Pair, altNames []string, client bool, passphrase s
 	writeKey(name, priv, passphrase)
 }
 
-func genPair() (crypto.PrivateKey, any) {
-	var priv any
+func genPair() (crypto.Signer, crypto.PublicKey) {
+	var priv crypto.Signer
 	var err error
 
 	if opts.ed25519 {
