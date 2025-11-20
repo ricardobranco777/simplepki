@@ -7,7 +7,7 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha1"
+	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
@@ -128,7 +128,7 @@ func newCA(name string, CA *Pair, passphrase string) *Pair {
 		log.Fatal(err)
 	}
 
-	skid := sha1.Sum(spki.SubjectPublicKey.Bytes)
+	skid := sha256.Sum256(spki.SubjectPublicKey.Bytes)
 
 	maxPathLen := 0
 	if CA == nil {
