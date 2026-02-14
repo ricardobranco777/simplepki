@@ -98,7 +98,7 @@ func genPair() (crypto.Signer, crypto.PublicKey) {
 		log.Fatal(err)
 	}
 
-	pub := priv.(crypto.Signer).Public()
+	pub := priv.Public()
 	return priv, pub
 }
 
